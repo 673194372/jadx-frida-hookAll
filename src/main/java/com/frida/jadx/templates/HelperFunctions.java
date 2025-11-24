@@ -51,4 +51,10 @@ public class HelperFunctions {
         "打印自定义对象",
         ScriptLoader.loadScript(BASE_PATH + "07-print-custom-object.js")
     );
+    
+    public static final ScriptEntry PRINT_OBJECT_ARRAY = new ScriptEntry(
+        "Print Object Array",
+        "打印对象数组",
+        ScriptLoader.loadScript(BASE_PATH + "08-print-objectArray.js")
+    );
 }

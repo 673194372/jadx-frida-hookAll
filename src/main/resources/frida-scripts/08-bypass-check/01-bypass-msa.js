@@ -1,6 +1,6 @@
 /**
  * 绕过移动安全联盟frida检测的脚本
- * 对应的so是libmsaoaidsec.so
+ * 对应的so是libmsaoaidsec.so, 旧版本是libsecsdk.so(简单魔改特征或者置空so就行)
  */
 
 function hook_dlopen() {
@@ -11,9 +11,10 @@ function hook_dlopen() {
             // msa: 干掉入口函数
             if (this.fileName && this.fileName.includes("libmsaoaidsec.so")) {
                 console.warn(`[+] dlopen onEnter ==> ${this.fileName}`);
-                // 测试环境: win11, rusda16.2.1(抹除一些基础特征) + 本脚本即可绕过； 如果是比较强的魔改server, 不需要本脚本；
+                // 测试环境: win11/10, android12/13, rusda16.2.1(抹除一些基础特征) + 本脚本即可绕过； 如果是比较强的魔改server, 不需要本脚本；
 
-                // 通用1: 杀入口函数(msa是一个比较固定的sdk, 版本更迭慢, 最近的版本入口函数固定不变)
+                // 通用1: 杀入口函数(很稳定)
+                // msa是一个比较固定的sdk, 版本更迭慢, 最近的版本入口函数固定不变
                 hook_call_constructors_bypass_msa();
 
                 // 通用2: 空替换(小部分情况不稳定)
@@ -65,9 +66,12 @@ function hook_call_constructors_bypass_msa() {
     let symbols = module_linker.enumerateSymbols();
     for (let index = 0; index < symbols.length; index++) {
         let symbol = symbols[index];
-        // 查找名为"__dl__ZN6soinfo17call_constructorsEv"的符号地址
-        if (symbol.name === "__dl__ZN6soinfo17call_constructorsEv") {
+        // 模糊匹配：只要包含 soinfo 和 call_constructors 就是目标
+        // 这种策略比使用粉碎后的全名匹配更稳健，适应不同Android版本
+        if (symbol.name.includes("soinfo") && symbol.name.includes("call_constructors")) {
             address_call_constructors = symbol.address;
+            console.warn(`[*] Found symbol: ${symbol.name}`);
+            break;
         }
     }
     if (!address_call_constructors) {
@@ -193,4 +197,4 @@ function hook_monitor_maps_redirect() {
 
 
 // hook_monitor_maps_redirect(); // 有的手机需要打开这个才行
-hook_dlopen(); // msa, 梆梆nop关键线程函数
+hook_dlopen(); // msa绕过

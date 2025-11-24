@@ -147,47 +147,53 @@ public class FridaScriptDialog extends JDialog {
         helperNode.add(createScriptNode(HelperFunctions.PRINT_STRING_ARRAY, 4));
         helperNode.add(createScriptNode(HelperFunctions.PRINT_METHOD_SIGNATURE, 5));
         helperNode.add(createScriptNode(HelperFunctions.PRINT_CUSTOM_OBJECT, 6));
+        helperNode.add(createScriptNode(HelperFunctions.PRINT_OBJECT_ARRAY, 7));
         rootNode.add(helperNode);
         logger.debug("Loaded {} Helper Functions scripts", helperNode.getChildCount());
 
         // Category 3: Hook JDK
         String jdkTitle = isEnglish ? "3. Hook JDK" : "3. Hook JDK";
         DefaultMutableTreeNode jdkNode = new DefaultMutableTreeNode(jdkTitle);
-        jdkNode.add(createScriptNode(HookJDK.MONITOR_ALL_MAP, 0));
-        jdkNode.add(createScriptNode(HookJDK.MONITOR_ARRAYLIST, 1));
-        jdkNode.add(createScriptNode(HookJDK.MONITOR_BASE64_ANDROID, 2));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_STRING, 0));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_STRINGBUILDER, 1));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_STRINGFACTORY, 2));
         jdkNode.add(createScriptNode(HookJDK.MONITOR_BASE64_JAVA, 3));
-        jdkNode.add(createScriptNode(HookJDK.MONITOR_COLLECTIONS, 4));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_URL, 4));
         jdkNode.add(createScriptNode(HookJDK.MONITOR_FILE, 5));
-        jdkNode.add(createScriptNode(HookJDK.MONITOR_STRING, 6));
-        jdkNode.add(createScriptNode(HookJDK.MONITOR_STRINGBUILDER, 7));
-        jdkNode.add(createScriptNode(HookJDK.MONITOR_STRINGFACTORY, 8));
-        jdkNode.add(createScriptNode(HookJDK.MONITOR_URL, 9));
-        jdkNode.add(createScriptNode(HookJDK.PRINT_MAP, 10));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_ALL_MAP, 6));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_ARRAYLIST, 7));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_COLLECTIONS, 8));
+        jdkNode.add(createScriptNode(HookJDK.PRINT_MAP, 9));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_JSON, 10));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_CRYPTO, 11));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_PROCESS, 12));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_SYSTEM_LOAD, 13));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_THREAD, 14));
         rootNode.add(jdkNode);
         logger.debug("Loaded {} Hook JDK scripts", jdkNode.getChildCount());
 
         // Category 4: Hook Android
         String androidTitle = isEnglish ? "4. Hook Android" : "4. Hook Android";
         DefaultMutableTreeNode androidNode = new DefaultMutableTreeNode(androidTitle);
-        androidNode.add(createScriptNode(HookAndroid.BLOCK_POPUP, 0));
-        androidNode.add(createScriptNode(HookAndroid.HOOK_CRASH, 1));
-        androidNode.add(createScriptNode(HookAndroid.MONITOR_ACTIVITY, 2));
-        androidNode.add(createScriptNode(HookAndroid.MONITOR_DIALOG, 3));
+        androidNode.add(createScriptNode(HookAndroid.MONITOR_BASE64_ANDROID, 0));
+        androidNode.add(createScriptNode(HookAndroid.MONITOR_ACTIVITY, 1));
+        androidNode.add(createScriptNode(HookAndroid.MONITOR_DIALOG, 2));
+        androidNode.add(createScriptNode(HookAndroid.MONITOR_TOAST, 3));
         androidNode.add(createScriptNode(HookAndroid.MONITOR_EDITTEXT, 4));
-        androidNode.add(createScriptNode(HookAndroid.MONITOR_LOG, 5));
-        androidNode.add(createScriptNode(HookAndroid.MONITOR_SHAREDPREFERENCES, 6));
+        androidNode.add(createScriptNode(HookAndroid.MONITOR_WEBVIEW, 5));
+        androidNode.add(createScriptNode(HookAndroid.MONITOR_LOG, 6));
         androidNode.add(createScriptNode(HookAndroid.MONITOR_TEXTUTILS, 7));
-        androidNode.add(createScriptNode(HookAndroid.MONITOR_TOAST, 8));
-        androidNode.add(createScriptNode(HookAndroid.MONITOR_WEBVIEW, 9));
+        androidNode.add(createScriptNode(HookAndroid.MONITOR_SHAREDPREFERENCES, 8));
+        androidNode.add(createScriptNode(HookAndroid.BLOCK_POPUP, 9));
+        androidNode.add(createScriptNode(HookAndroid.MONITOR_CRASH, 10));
         rootNode.add(androidNode);
         logger.debug("Loaded {} Hook Android scripts", androidNode.getChildCount());
 
         // Category 5: Hook Third-Party
         String thirdPartyTitle = isEnglish ? "5. Hook Third-Party" : "5. Hook第三方库";
         DefaultMutableTreeNode thirdPartyNode = new DefaultMutableTreeNode(thirdPartyTitle);
-        thirdPartyNode.add(createScriptNode(HookThirdParty.MONITOR_JSONOBJECT, 0));
-        thirdPartyNode.add(createScriptNode(HookThirdParty.MONITOR_OKHTTP, 1));
+        thirdPartyNode.add(createScriptNode(HookThirdParty.MONITOR_OKHTTP, 0));
+        thirdPartyNode.add(createScriptNode(HookThirdParty.MONITOR_JSONOBJECT, 1));
         rootNode.add(thirdPartyNode);
         logger.debug("Loaded {} Hook Third-Party scripts", thirdPartyNode.getChildCount());
 
@@ -206,14 +212,14 @@ public class FridaScriptDialog extends JDialog {
         fridaNode.add(createScriptNode(FridaAdvanced.CLASSLOADER_HELPER, 1));
         fridaNode.add(createScriptNode(FridaAdvanced.DUMP_CERTIFICATE, 2));
         fridaNode.add(createScriptNode(FridaAdvanced.LOAD_DEX, 3));
+        fridaNode.add(createScriptNode(FridaAdvanced.JNI_REGISTER_NATIVES, 4));
         rootNode.add(fridaNode);
         logger.debug("Loaded {} Frida Advanced scripts", fridaNode.getChildCount());
         
         // Category 8: Bypass Check
         String bypassTitle = isEnglish ? "8. Bypass Check" : "8. 绕过检测";
         DefaultMutableTreeNode bypassNode = new DefaultMutableTreeNode(bypassTitle);
-        // TODO: Add bypass scripts here when available
-        // bypassNode.add(createScriptNode(BypassCheck.YOUR_SCRIPT, 0));
+        bypassNode.add(createScriptNode(BypassCheck.BYPASS_MSA, 0));
         rootNode.add(bypassNode);
         logger.debug("Loaded {} Bypass Check scripts", bypassNode.getChildCount());
 

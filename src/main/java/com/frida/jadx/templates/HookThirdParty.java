@@ -13,12 +13,12 @@ public class HookThirdParty {
     public static final ScriptEntry MONITOR_JSONOBJECT = new ScriptEntry(
         "Monitor JSONObject",
         "监控JSONObject",
-        ScriptLoader.loadScript(BASE_PATH + "monitor-jsonobject.js")
+        ScriptLoader.loadScript(BASE_PATH + "02-monitor-jsonobject.js")
     );
     
     public static final ScriptEntry MONITOR_OKHTTP = new ScriptEntry(
         "Monitor OkHttp",
         "监控OkHttp",
-        ScriptLoader.loadScript(BASE_PATH + "monitor-okhttp.js")
+        ScriptLoader.loadScript(BASE_PATH + "01-monitor-okhttp.js")
     );
 }

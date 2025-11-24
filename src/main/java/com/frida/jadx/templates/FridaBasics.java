@@ -8,41 +8,41 @@ import com.frida.jadx.FridaTemplates.ScriptEntry;
  */
 public class FridaBasics {
     
-    private static final String BASE_PATH = "frida-scripts/01-frida-basics/";
+    private static final String BASE_PATH = "frida-scripts/01-frida-basicUse/";
     
     public static final ScriptEntry HOOK_BASIC = new ScriptEntry(
         "Hook Basic Method",
         "Hook普通方法",
-        ScriptLoader.loadScript(BASE_PATH + "hook-basic.js")
+        ScriptLoader.loadScript(BASE_PATH + "01-hook-basicHook.js")
     );
     
     public static final ScriptEntry HOOK_OVERLOAD = new ScriptEntry(
         "Hook Overloaded Method",
         "Hook重载方法",
-        ScriptLoader.loadScript(BASE_PATH + "hook-overload.js")
+        ScriptLoader.loadScript(BASE_PATH + "02-hook-overload.js")
     );
     
     public static final ScriptEntry HOOK_CONSTRUCTOR = new ScriptEntry(
         "Hook Constructor",
         "Hook构造函数",
-        ScriptLoader.loadScript(BASE_PATH + "hook-constructor.js")
+        ScriptLoader.loadScript(BASE_PATH + "04-hook-classConstructor.js")
     );
     
     public static final ScriptEntry HOOK_FIELD = new ScriptEntry(
         "Hook Field",
         "Hook字段",
-        ScriptLoader.loadScript(BASE_PATH + "hook-field.js")
+        ScriptLoader.loadScript(BASE_PATH + "03-hook-field.js")
     );
     
     public static final ScriptEntry HOOK_INNER_CLASS = new ScriptEntry(
         "Hook Inner Class",
         "Hook内部类",
-        ScriptLoader.loadScript(BASE_PATH + "hook-inner-class.js")
+        ScriptLoader.loadScript(BASE_PATH + "05-hook-inner-class.js")
     );
     
     public static final ScriptEntry ENUMERATE_CLASSES = new ScriptEntry(
         "Enumerate Classes",
         "枚举类和方法",
-        ScriptLoader.loadScript(BASE_PATH + "enumerate-classes.js")
+        ScriptLoader.loadScript(BASE_PATH + "06-enumerate-classes.js")
     );
 }
