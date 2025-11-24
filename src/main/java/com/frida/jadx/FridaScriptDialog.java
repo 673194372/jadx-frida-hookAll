@@ -7,6 +7,8 @@ import org.fife.ui.rsyntaxtextarea.*;
 import org.fife.ui.rtextarea.*;
 
 import javax.swing.*;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
@@ -62,6 +64,25 @@ public class FridaScriptDialog extends JDialog {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) scriptTree.getLastSelectedPathComponent();
             if (node != null && node.getUserObject() instanceof ScriptTemplate) {
                 displayScript((ScriptTemplate) node.getUserObject());
+            }
+        });
+        
+        // Add accordion style expansion (single expand)
+        scriptTree.addTreeWillExpandListener(new TreeWillExpandListener() {
+            @Override
+            public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
+                TreePath path = event.getPath();
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+                
+                // Only apply to first level nodes (categories)
+                if (node.getParent() == rootNode) {
+                    collapseOtherNodes(node);
+                }
+            }
+
+            @Override
+            public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
+                // Do nothing
             }
         });
 
@@ -292,8 +313,8 @@ public class FridaScriptDialog extends JDialog {
         DefaultTreeModel model = (DefaultTreeModel) scriptTree.getModel();
         model.reload();
         
-        // Expand all nodes by default
-        expandAllNodes(scriptTree, 0, scriptTree.getRowCount());
+        // Default: Expand only the root node (implicitly done by JTree usually, but we can ensure)
+        // Do NOT expand all nodes.
         
         logger.info("Script templates loaded successfully. Total categories: 8");
     }
@@ -454,6 +475,24 @@ public class FridaScriptDialog extends JDialog {
         }
         
         logger.info("UI language updated to: {}", isEnglish ? "English" : "Chinese");
+    }
+
+    /**
+     * Collapse other nodes at the same level
+     */
+    private void collapseOtherNodes(DefaultMutableTreeNode node) {
+        TreeNode parent = node.getParent();
+        if (parent == null) return;
+        
+        for (int i = 0; i < parent.getChildCount(); i++) {
+            TreeNode child = parent.getChildAt(i);
+            if (child != node) {
+                TreePath path = new TreePath(((DefaultMutableTreeNode)child).getPath());
+                if (scriptTree.isExpanded(path)) {
+                    scriptTree.collapsePath(path);
+                }
+            }
+        }
     }
 
     /**
