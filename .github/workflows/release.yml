@@ -70,12 +70,15 @@ jobs:
         mvn versions:commit
     
     - name: Build with Maven
-      run: mvn clean package -DskipTests
+      run: |
+        mvn clean package -DskipTests
+        # Rename JAR to match Repo Name (case sensitive)
+        mv target/jadx-frida-hookall-${{ steps.get_version.outputs.VERSION }}.jar target/jadx-frida-hookAll-${{ steps.get_version.outputs.VERSION }}.jar
     
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
-        files: target/jadx-frida-hookall-${{ steps.get_version.outputs.VERSION }}.jar
+        files: target/jadx-frida-hookAll-${{ steps.get_version.outputs.VERSION }}.jar
         body: |
           ## Frida HookAll Plugin v${{ steps.get_version.outputs.VERSION }}
           
