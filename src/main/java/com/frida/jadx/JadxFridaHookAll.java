@@ -66,7 +66,7 @@ public class JadxFridaHookAll implements JadxPlugin {
     public JadxPluginInfo getPluginInfo() {
         return JadxPluginInfoBuilder.pluginId(PLUGIN_ID)
                 .name("Frida HookAll")
-                .description("Frida Script Library | Frida实用脚本库\nPractical Frida Hook scripts for Java/Android reverse engineering.\nCtrl+Alt+H to open.\nAuthor: x1a0f3n9(LunFengChen)\nversion: 1.0.0")
+                .description("Frida Script Library | Frida实用脚本库\nPractical Frida Hook scripts for Java/Android reverse engineering.\nCtrl+Alt+H to open.\nAuthor: x1a0f3n9(LunFengChen)\nversion: 1.0.1")
                 .homepage("https://github.com/LunFengChen/jadx-frida-hookAll")
                 .build();
     }
