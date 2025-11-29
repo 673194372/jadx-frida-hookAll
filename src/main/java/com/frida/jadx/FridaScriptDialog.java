@@ -227,6 +227,7 @@ public class FridaScriptDialog extends JDialog {
         basicsNode.add(createScriptNode(FridaBasics.HOOK_FIELD, 3));
         basicsNode.add(createScriptNode(FridaBasics.HOOK_INNER_CLASS, 4));
         basicsNode.add(createScriptNode(FridaBasics.ENUMERATE_CLASSES, 5));
+        basicsNode.add(createScriptNode(FridaBasics.RPC_CALL_METHOD, 6));
         rootNode.add(basicsNode);
         logger.debug("Loaded {} Frida Basics scripts", basicsNode.getChildCount());
         

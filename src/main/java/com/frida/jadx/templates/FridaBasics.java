@@ -45,4 +45,10 @@ public class FridaBasics {
         "枚举类和方法",
         ScriptLoader.loadScript(BASE_PATH + "06-enumerate-classes.js")
     );
+    
+    public static final ScriptEntry RPC_CALL_METHOD = new ScriptEntry(
+        "RPC Call Method",
+        "主动调用方法(RPC)",
+        ScriptLoader.loadScript(BASE_PATH + "07-rpc-call-method.js")
+    );
 }
