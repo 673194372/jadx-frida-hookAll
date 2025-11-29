@@ -10,10 +10,33 @@ public class BypassCheck {
     
     private static final String BASE_PATH = "frida-scripts/08-bypass-check/";
     
-    // 第8类目前为空，你可以在这里添加各种绕过检测的脚本
-    public static final ScriptEntry BYPASS_MSA = new ScriptEntry(
-        "Bypass MSA",
-        "绕过MSA检测",
-        ScriptLoader.loadScript(BASE_PATH + "01-bypass-msa.js")
+    /**
+     * Bypass Root Detection (Universal)
+     * 通用Root检测绕过，Hook常见的文件检测和命令执行
+     */
+    public static final ScriptEntry BYPASS_ROOT_DETECTION = new ScriptEntry(
+        "Bypass Root Detection",
+        "绕过Root检测",
+        ScriptLoader.loadScript(BASE_PATH + "01-bypass-root-detection.js")
+    );
+    
+    /**
+     * Bypass SSL Pinning (Universal)
+     * 通用SSL证书校验绕过，支持系统TrustManager和OkHttp CertificatePinner
+     */
+    public static final ScriptEntry BYPASS_SSL_PINNING = new ScriptEntry(
+        "Bypass SSL Pinning",
+        "绕过SSL证书校验",
+        ScriptLoader.loadScript(BASE_PATH + "02-bypass-ssl-pinning.js")
+    );
+    
+    /**
+     * Bypass MSA Frida Detection
+     * 绕过移动安全联盟(MSA)的Frida检测，通过Hook入口函数
+     */
+    public static final ScriptEntry BYPASS_MSA_FRIDA_CHECK = new ScriptEntry(
+        "Bypass MSA Frida Check",
+        "绕过MSA Frida检测",
+        ScriptLoader.loadScript(BASE_PATH + "03-bypass-msa-frida-check.js")
     );
 }

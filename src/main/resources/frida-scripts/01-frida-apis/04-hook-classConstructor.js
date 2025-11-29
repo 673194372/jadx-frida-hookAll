@@ -34,6 +34,7 @@ hook_classConstructor();
    - 在类第一次被加载时执行，只执行一次。
    - Frida 不太容易 Hook `$clinit`，因为它通常在 `Java.use` 之前就已经执行完了。
    - 除非你在类加载之前就拦截到（比较高级的操作）。
+   - hook这个意义不大
 
 速记：
 1. 构造函数就是 `$init`。

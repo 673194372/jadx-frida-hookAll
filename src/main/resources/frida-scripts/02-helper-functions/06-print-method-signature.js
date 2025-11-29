@@ -75,34 +75,10 @@ function showAllSignatures(clazz){
     }
 }
 
-// 注意事项：
-// 1. Smali 签名格式: 方法名(参数类型...)返回类型
-// 2. 基本类型: I=int, J=long, Z=boolean, F=float, D=double, V=void, B=byte, C=char, S=short
-// 3. 对象类型: Ljava/lang/String; (以L开头，以;结尾)
-// 4. 数组类型: [I=int[], [[I=int[][], [Ljava/lang/String;=String[]
-
-// 使用示例:
-// function hook_monitor_printSignatures(){
-//     Java.perform(function () {
-//         let com_example_YourClass = Java.use("com.example.YourClass");
-//         
-//         console.log(`[*] Printing all method signatures for com.example.YourClass`);
-//         
-//         // 打印所有 Java 签名
-//         showMethodJavaSignature(com_example_YourClass);
-//         
-//         // 打印所有 Smali 签名
-//         showMethodSmaliSignature(com_example_YourClass);
-//         
-//         // 同时打印两种签名
-//         showAllSignatures(com_example_YourClass);
-//     });
-//     console.warn(`[*] hook_monitor_printSignatures is injected!`);
-// };
-// hook_monitor_printSignatures();
-
 /*
 关于 打印方法签名 (Print Method Signature) 的详解
+
+没啥用，因为jadx都有, 主要用处是不方便脱壳的时候用的。
 
 Frida Hook 需要精确的重载类型 (Overload)，尤其是当方法有多个同名不同参版本时。
 这个脚本能帮你把目标类的所有方法签名都打印出来，方便复制粘贴到脚本里。

@@ -16,12 +16,6 @@ public class HookAndroid {
         ScriptLoader.loadScript(BASE_PATH + "01-monitor-base64-android.js")
     );
     
-    public static final ScriptEntry MONITOR_STRINGFACTORY = new ScriptEntry(
-        "Monitor StringFactory",
-        "监控StringFactory",
-        ScriptLoader.loadScript(BASE_PATH + "03-monitor-stringfactory.js")
-    );
-    
     public static final ScriptEntry MONITOR_ACTIVITY = new ScriptEntry(
         "Monitor Activity",
         "监控Activity",
@@ -34,51 +28,57 @@ public class HookAndroid {
         ScriptLoader.loadScript(BASE_PATH + "03-monitor-dialog.js")
     );
     
+    public static final ScriptEntry MONITOR_STRINGFACTORY = new ScriptEntry(
+        "Monitor StringFactory",
+        "监控StringFactory",
+        ScriptLoader.loadScript(BASE_PATH + "04-monitor-stringfactory.js")
+    );
+    
     public static final ScriptEntry MONITOR_TOAST = new ScriptEntry(
         "Monitor Toast",
         "监控Toast",
-        ScriptLoader.loadScript(BASE_PATH + "04-monitor-toast.js")
+        ScriptLoader.loadScript(BASE_PATH + "05-monitor-toast.js")
     );
     
     public static final ScriptEntry MONITOR_EDITTEXT = new ScriptEntry(
         "Monitor EditText",
         "监控EditText",
-        ScriptLoader.loadScript(BASE_PATH + "05-monitor-edittext.js")
+        ScriptLoader.loadScript(BASE_PATH + "06-monitor-edittext.js")
     );
     
     public static final ScriptEntry MONITOR_WEBVIEW = new ScriptEntry(
         "Monitor WebView",
         "监控WebView",
-        ScriptLoader.loadScript(BASE_PATH + "06-monitor-webview.js")
+        ScriptLoader.loadScript(BASE_PATH + "07-monitor-webview.js")
     );
     
     public static final ScriptEntry MONITOR_LOG = new ScriptEntry(
         "Monitor Log",
         "监控Log",
-        ScriptLoader.loadScript(BASE_PATH + "07-monitor-log.js")
+        ScriptLoader.loadScript(BASE_PATH + "08-monitor-log.js")
     );
     
     public static final ScriptEntry MONITOR_TEXTUTILS = new ScriptEntry(
         "Monitor TextUtils",
         "监控TextUtils",
-        ScriptLoader.loadScript(BASE_PATH + "08-monitor-textutils.js")
+        ScriptLoader.loadScript(BASE_PATH + "09-monitor-textutils.js")
     );
     
     public static final ScriptEntry MONITOR_SHAREDPREFERENCES = new ScriptEntry(
         "Monitor SharedPreferences",
         "监控SharedPreferences",
-        ScriptLoader.loadScript(BASE_PATH + "09-monitor-sharedpreferences.js")
+        ScriptLoader.loadScript(BASE_PATH + "10-monitor-sharedpreferences.js")
     );
     
     public static final ScriptEntry BLOCK_POPUP = new ScriptEntry(
         "Block Popup",
         "阻止弹窗",
-        ScriptLoader.loadScript(BASE_PATH + "10-block-popup.js")
+        ScriptLoader.loadScript(BASE_PATH + "11-block-popup.js")
     );
     
     public static final ScriptEntry MONITOR_CRASH = new ScriptEntry(
         "Monitor Crash",
         "监控崩溃",
-        ScriptLoader.loadScript(BASE_PATH + "11-monitor-crash.js")
+        ScriptLoader.loadScript(BASE_PATH + "12-monitor-crash.js")
     );
 }

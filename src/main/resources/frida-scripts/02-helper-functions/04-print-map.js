@@ -22,6 +22,7 @@ function showJavaMap(map, mapName) {
 }
 
 // 方法2: 使用迭代器遍历 Map
+// 这个利用的是Java的Map的api
 function iterateMap(map) {
     if (map == null) { return; }
     var keyset = map.keySet();
@@ -39,6 +40,7 @@ function iterateMap(map) {
 // 方法3: 使用 Gson 打印 Map (需要先加载 r0gson.dex)
 // 下载见r0ysue博客: http://github.com/r0ysue/AndroidSecurityStudy/blob/master/FRIDA/r0gson.dex.zip
 // 使用前需要执行: adb push r0gson.dex /data/local/tmp/r0gson.dex
+// 用这个的好处是 如果app也用了，避免类名冲突
 function mapToJson(map) {
     Java.openClassFile("/data/local/tmp/r0gson.dex").load();
     var GsonClass_Gson = Java.use('com.r0ysue.gson.Gson');
@@ -50,23 +52,6 @@ function mapToJson(map) {
 // 2. 如果 Map 的值是 byte[]，会自动转换为字符串显示
 // 3. mapToJson 需要先 push r0gson.dex 到设备: adb push r0gson.dex /data/local/tmp/
 
-// 使用示例:
-// function hook_monitor_calcSignature(){
-//     Java.perform(function () {
-//         let com_iget_baselib_BaseApi = Java.use("com.iget.baselib.BaseApi");
-//         com_iget_baselib_BaseApi["calcSignature"].implementation = function (map, map2) {
-//             console.log(`[->] com_iget_baselib_BaseApi.calcSignature is called! args are as follows:`);
-//             showJavaMap(map, "map");
-//             showJavaMap(map2, "map2");
-//             var retval = this["calcSignature"](map, map2);
-//             console.log(`[<-] com_iget_baselib_BaseApi.calcSignature ended! \n    retval= ${retval}`);
-//             return retval;
-//         };
-//     });
-//     console.warn(`[*] hook_monitor_calcSignature is injected!`);
-// };
-// hook_monitor_calcSignature();
-
 /*
 关于 打印 Map (Print Map) 的详解
 
@@ -75,16 +60,16 @@ Map 是 Java 中最常用的键值对容器 (如 HashMap, TreeMap, LinkedHashMap
 
 核心功能：
 1. 遍历打印：
-   - 直接打印 Map 对象通常只能看到 "java.util.HashMap@xxxx"。
-   - 该脚本提供了 `showJavaMap` 函数，可以遍历 Map 的所有 Key 和 Value 并打印出来。
+   - 直接打印 Map 对象通常只能看到 [Object object] 或者 "java.util.HashMap@xxxx"。
+   - 提供了 `showJavaMap` 函数，可以遍历 Map 的所有 Key 和 Value 并打印出来。
 
-2. 自动处理 byte[]：
+2. 自动处理 byte[](后续支持更多)：
    - 如果 Value 是 byte[] (字节数组)，脚本会自动将其转换为字符串显示，方便查看。
 
 3. Gson 支持 (可选)：
    - 如果想看更漂亮的 JSON 格式，可以使用 `mapToJson` (需要 r0gson.dex)。
 
 速记：
-1. 看到参数类型是 `java.util.Map`，直接把这个脚本粘过去，用 `showJavaMap(map)` 打印。
+1. 看到参数类型是 `java.util.Map`，直接把这个脚本粘过去，用 `showJavaMap(map)` 打印。 如果是我改的jadx，按F会自动生成该辅助函数
 2. 这是分析签名算法（通常涉及参数排序和拼接）的神器。
 */

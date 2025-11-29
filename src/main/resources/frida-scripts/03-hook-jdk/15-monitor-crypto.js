@@ -1,38 +1,58 @@
+/**
+ * 【功能】监控 Java 加密架构 (JCA) 的所有加密操作
+ * 
+ * 【参考】思路参考网上流出的小肩膀自吐算法脚本
+ * 
+ * 【依赖辅助函数】
+ * 加密过程中会用到很多数据转换函数；
+ */
+
 // Monitor Java Cryptography Architecture (JCA) operations
 // 监控 Java 加密架构 (MessageDigest, Mac, Cipher, Signature)
-// 用途：监控所有哈希计算(MD5/SHA)、HMAC签名、AES/RSA加解密。
-// 逆向价值：**最高**。这是定位签名算法、获取加密密钥(Key/IV)的最直接路径。
+// 用途：监控所有哈希计算(MD5/SHA)、HMAC签名、AES/RSA加解密
+// 逆向价值：★★★★★ 这是定位签名算法、获取加密密钥(Key/IV)的最直接路径
 function hook_monitor_crypto() {
     Java.perform(function () {
+        const base64EncodeChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+        
+        function bytesToHex(bytes) {
+            var str = '';
+            for (var i = 0; i < bytes.length; i++) {
+                var k = bytes[i];
+                var j = k < 0 ? k + 256 : k;
+                str += (j < 16 ? "0" : "") + j.toString(16);
+            }
+            return str;
+        }
+        
+        function bytesToString(bytes) {
+            var str = '';
+            bytes = new Uint8Array(bytes);
+            for (var i = 0; i < bytes.length; i++) {
+                str += String.fromCharCode(bytes[i]);
+            }
+            return str;
+        }
+        
+        function bytesToBase64(bytes) {
+            var result = '';
+            var i = 0;
+            while (i < bytes.length) {
+                var b1 = bytes[i++] & 0xFF;
+                var b2 = i < bytes.length ? bytes[i++] & 0xFF : 0;
+                var b3 = i < bytes.length ? bytes[i++] & 0xFF : 0;
+                
+                result += base64EncodeChars.charAt(b1 >> 2);
+                result += base64EncodeChars.charAt(((b1 & 0x03) << 4) | (b2 >> 4));
+                result += (i - 1 < bytes.length) ? base64EncodeChars.charAt(((b2 & 0x0F) << 2) | (b3 >> 6)) : '=';
+                result += (i < bytes.length) ? base64EncodeChars.charAt(b3 & 0x3F) : '=';
+            }
+            return result;
+        }
+        
         // Helper: Print Stack Trace
         function showJavaStacks() {
-            if (global.fridaHelperConfig && global.fridaHelperConfig.printStack === false) return;
             console.log(Java.use("android.util.Log").getStackTraceString(Java.use("java.lang.Exception").$new()));
-        }
-
-        // Helper: Byte Array to Hex
-        function bytesToHex(bytes) {
-            if (!bytes) return "null";
-            let hex = "";
-            for (let i = 0; i < bytes.length; i++) {
-                let b = bytes[i] & 0xff;
-                if (b < 16) hex += "0";
-                hex += b.toString(16);
-            }
-            return hex;
-        }
-
-        // Helper: Byte Array to String
-        function bytesToString(bytes) {
-            if (!bytes) return "null";
-            try {
-                let str = Java.use("java.lang.String").$new(bytes, "UTF-8");
-                // 简单过滤非打印字符
-                if (/^[\x20-\x7E]*$/.test(str)) return str;
-                return "[binary]";
-            } catch (e) {
-                return "[error]";
-            }
         }
 
         // ========================================================================
@@ -109,7 +129,74 @@ function hook_monitor_crypto() {
         };
 
         // ========================================================================
-        // 3. Cipher (Encryption/Decryption: AES, DES, RSA)
+        // 3. SecretKeySpec (密钥规范 - 最重要！)
+        // ========================================================================
+        let SecretKeySpec = Java.use('javax.crypto.spec.SecretKeySpec');
+        
+        SecretKeySpec.$init.overload('[B', 'java.lang.String').implementation = function (keyBytes, algorithm) {
+            console.log("\n╔══════════════════════════════════════");
+            console.log("║ [SecretKeySpec] 密钥创建");
+            console.log("╠══════════════════════════════════════");
+            console.log("║ 算法: " + algorithm);
+            console.log("║ 密钥(Hex): " + bytesToHex(keyBytes));
+            console.log("║ 密钥(String): " + bytesToString(keyBytes));
+            console.log("║ 密钥(Base64): " + bytesToBase64(keyBytes));
+            console.log("╚══════════════════════════════════════");
+            showJavaStacks();
+            return this.$init(keyBytes, algorithm);
+        };
+        
+        // ========================================================================
+        // 4. IvParameterSpec (IV 向量 - 关键！)
+        // ========================================================================
+        let IvParameterSpec = Java.use('javax.crypto.spec.IvParameterSpec');
+        
+        IvParameterSpec.$init.overload('[B').implementation = function (iv) {
+            console.log("\n╔══════════════════════════════════════");
+            console.log("║ [IvParameterSpec] IV向量创建");
+            console.log("╠══════════════════════════════════════");
+            console.log("║ IV(Hex): " + bytesToHex(iv));
+            console.log("║ IV(String): " + bytesToString(iv));
+            console.log("║ IV(Base64): " + bytesToBase64(iv));
+            console.log("╚══════════════════════════════════════");
+            showJavaStacks();
+            return this.$init(iv);
+        };
+        
+        // ========================================================================
+        // 5. DESKeySpec (DES 密钥)
+        // ========================================================================
+        let DESKeySpec = Java.use('javax.crypto.spec.DESKeySpec');
+        
+        DESKeySpec.$init.overload('[B').implementation = function (keyBytes) {
+            const result = this.$init(keyBytes);
+            const bytes_key_des = this.getKey();
+            console.log("\n╔══════════════════════════════════════");
+            console.log("║ [DESKeySpec] DES密钥创建");
+            console.log("╠══════════════════════════════════════");
+            console.log("║ 密钥(Hex): " + bytesToHex(bytes_key_des));
+            console.log("║ 密钥(String): " + bytesToString(bytes_key_des));
+            console.log("╚══════════════════════════════════════");
+            showJavaStacks();
+            return result;
+        };
+        
+        DESKeySpec.$init.overload('[B', 'int').implementation = function (keyBytes, offset) {
+            const result = this.$init(keyBytes, offset);
+            const bytes_key_des = this.getKey();
+            console.log("\n╔══════════════════════════════════════");
+            console.log("║ [DESKeySpec] DES密钥创建 (带偏移)");
+            console.log("╠══════════════════════════════════════");
+            console.log("║ 偏移: " + offset);
+            console.log("║ 密钥(Hex): " + bytesToHex(bytes_key_des));
+            console.log("║ 密钥(String): " + bytesToString(bytes_key_des));
+            console.log("╚══════════════════════════════════════");
+            showJavaStacks();
+            return result;
+        };
+
+        // ========================================================================
+        // 6. Cipher (Encryption/Decryption: AES, DES, RSA)
         // ========================================================================
         let Cipher = Java.use("javax.crypto.Cipher");
         

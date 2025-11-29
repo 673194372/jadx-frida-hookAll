@@ -3,26 +3,6 @@ function showJavaStacks() {
     console.log(Java.use("android.util.Log").getStackTraceString(Java.use("java.lang.Exception").$new()));
 }
 
-// 注意事项：
-// 1. 如果你遇到了$匿名类，在jadx搜索时请换成.  例如：com.example.app$a->com.example.app.a
-// 2. Exception可以换成Throwable
-// 3. 没事不要打开这个，会打印出一大堆信息；如果是给ai分析日志，全部打开，ai会帮你分析调用栈
-
-// 使用示例:
-// function hook_monitor_calcSignature(){
-//     Java.perform(function () {
-//         let com_iget_baselib_BaseApi = Java.use("com.iget.baselib.BaseApi");
-//         com_iget_baselib_BaseApi["calcSignature"].implementation = function (map, map2) {
-//             console.log(`[->] com_iget_baselib_BaseApi.calcSignature is called! args are as follows:\n    ->map= ${map}\n    ->map2= ${map2}`);
-//             var retval = this["calcSignature"](map, map2);
-//             // showJavaStacks(); // 打印调用栈
-//             console.log(`[<-] com_iget_baselib_BaseApi.calcSignature ended! \n    retval= ${retval}`);
-//             return retval;
-//         };
-//     });
-//     console.warn(`[*] hook_monitor_calcSignature is injected!`);
-// };
-// hook_monitor_calcSignature();
 
 
 /*
@@ -40,6 +20,11 @@ function showJavaStacks() {
 2. 过滤干扰：
    - 有时候同一个函数被多处调用，通过判断堆栈内容，可以过滤掉无关的调用。
    - 例如：`if (stack.includes("com.example.ui.LoginActivity")) { ... }`
+
+注意事项：
+   - 如果你遇到了$匿名类，在jadx搜索时请换成.  例如：com.example.app$a->com.example.app.a
+   - Exception可以换成Throwable
+   - 没事不要打开这个，会打印出一大堆信息；如果是准备给ai分析日志，可以全部打开，ai会帮你分析调用栈
 
 速记：
 1. 想要知道“我是谁？我在哪？谁调用的我？”，就用这个。

@@ -1,6 +1,13 @@
 package com.frida.jadx;
 
-import com.frida.jadx.templates.*;
+import com.frida.jadx.templates.FridaBasics;
+import com.frida.jadx.templates.HelperFunctions;
+import com.frida.jadx.templates.HookJDK;
+import com.frida.jadx.templates.HookAndroid;
+import com.frida.jadx.templates.HookThirdParty;
+import com.frida.jadx.templates.HookJNI;
+import com.frida.jadx.templates.FridaAdvanced;
+import com.frida.jadx.templates.BypassCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.fife.ui.rsyntaxtextarea.*;
@@ -205,14 +212,14 @@ public class FridaScriptDialog extends JDialog {
     }
 
     /**
-     * Load script templates (8 categories)
+     * Load script templates (9 categories)
      */
     private void loadScriptTemplates() {
         logger.info("Loading Frida script templates...");
         boolean isEnglish = config.isEnglish();
         
-        // Category 1: Frida Basics
-        String basicsTitle = isEnglish ? "1. Frida Basics" : "1. Frida基本使用";
+        // Category 1: Frida APIs
+        String basicsTitle = isEnglish ? "1. Frida APIs" : "1. Frida API";
         DefaultMutableTreeNode basicsNode = new DefaultMutableTreeNode(basicsTitle);
         basicsNode.add(createScriptNode(FridaBasics.HOOK_BASIC, 0));
         basicsNode.add(createScriptNode(FridaBasics.HOOK_OVERLOAD, 1));
@@ -242,19 +249,17 @@ public class FridaScriptDialog extends JDialog {
         DefaultMutableTreeNode jdkNode = new DefaultMutableTreeNode(jdkTitle);
         jdkNode.add(createScriptNode(HookJDK.MONITOR_STRING, 0));
         jdkNode.add(createScriptNode(HookJDK.MONITOR_STRINGBUILDER, 1));
-        jdkNode.add(createScriptNode(HookJDK.MONITOR_STRINGFACTORY, 2));
-        jdkNode.add(createScriptNode(HookJDK.MONITOR_BASE64_JAVA, 3));
-        jdkNode.add(createScriptNode(HookJDK.MONITOR_URL, 4));
-        jdkNode.add(createScriptNode(HookJDK.MONITOR_FILE, 5));
-        jdkNode.add(createScriptNode(HookJDK.MONITOR_ALL_MAP, 6));
-        jdkNode.add(createScriptNode(HookJDK.MONITOR_ARRAYLIST, 7));
-        jdkNode.add(createScriptNode(HookJDK.MONITOR_COLLECTIONS, 8));
-        jdkNode.add(createScriptNode(HookJDK.PRINT_MAP, 9));
-        jdkNode.add(createScriptNode(HookJDK.MONITOR_JSON, 10));
-        jdkNode.add(createScriptNode(HookJDK.MONITOR_CRYPTO, 11));
-        jdkNode.add(createScriptNode(HookJDK.MONITOR_PROCESS, 12));
-        jdkNode.add(createScriptNode(HookJDK.MONITOR_SYSTEM_LOAD, 13));
-        jdkNode.add(createScriptNode(HookJDK.MONITOR_THREAD, 14));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_BASE64_JAVA, 2));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_URL, 3));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_FILE, 4));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_ALL_MAP, 5));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_ARRAYLIST, 6));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_COLLECTIONS, 7));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_JSON, 8));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_CRYPTO, 9));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_PROCESS, 10));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_SYSTEM_LOAD, 11));
+        jdkNode.add(createScriptNode(HookJDK.MONITOR_THREAD, 12));
         rootNode.add(jdkNode);
         logger.debug("Loaded {} Hook JDK scripts", jdkNode.getChildCount());
 
@@ -264,14 +269,15 @@ public class FridaScriptDialog extends JDialog {
         androidNode.add(createScriptNode(HookAndroid.MONITOR_BASE64_ANDROID, 0));
         androidNode.add(createScriptNode(HookAndroid.MONITOR_ACTIVITY, 1));
         androidNode.add(createScriptNode(HookAndroid.MONITOR_DIALOG, 2));
-        androidNode.add(createScriptNode(HookAndroid.MONITOR_TOAST, 3));
-        androidNode.add(createScriptNode(HookAndroid.MONITOR_EDITTEXT, 4));
-        androidNode.add(createScriptNode(HookAndroid.MONITOR_WEBVIEW, 5));
-        androidNode.add(createScriptNode(HookAndroid.MONITOR_LOG, 6));
-        androidNode.add(createScriptNode(HookAndroid.MONITOR_TEXTUTILS, 7));
-        androidNode.add(createScriptNode(HookAndroid.MONITOR_SHAREDPREFERENCES, 8));
-        androidNode.add(createScriptNode(HookAndroid.BLOCK_POPUP, 9));
-        androidNode.add(createScriptNode(HookAndroid.MONITOR_CRASH, 10));
+        androidNode.add(createScriptNode(HookAndroid.MONITOR_STRINGFACTORY, 3));
+        androidNode.add(createScriptNode(HookAndroid.MONITOR_TOAST, 4));
+        androidNode.add(createScriptNode(HookAndroid.MONITOR_EDITTEXT, 5));
+        androidNode.add(createScriptNode(HookAndroid.MONITOR_WEBVIEW, 6));
+        androidNode.add(createScriptNode(HookAndroid.MONITOR_LOG, 7));
+        androidNode.add(createScriptNode(HookAndroid.MONITOR_TEXTUTILS, 8));
+        androidNode.add(createScriptNode(HookAndroid.MONITOR_SHAREDPREFERENCES, 9));
+        androidNode.add(createScriptNode(HookAndroid.BLOCK_POPUP, 10));
+        androidNode.add(createScriptNode(HookAndroid.MONITOR_CRASH, 11));
         rootNode.add(androidNode);
         logger.debug("Loaded {} Hook Android scripts", androidNode.getChildCount());
 
@@ -279,33 +285,37 @@ public class FridaScriptDialog extends JDialog {
         String thirdPartyTitle = isEnglish ? "5. Hook Third-Party" : "5. Hook第三方库";
         DefaultMutableTreeNode thirdPartyNode = new DefaultMutableTreeNode(thirdPartyTitle);
         thirdPartyNode.add(createScriptNode(HookThirdParty.MONITOR_OKHTTP, 0));
-        thirdPartyNode.add(createScriptNode(HookThirdParty.MONITOR_JSONOBJECT, 1));
+        thirdPartyNode.add(createScriptNode(HookThirdParty.MONITOR_OKHTTP3, 1));
+        thirdPartyNode.add(createScriptNode(HookThirdParty.MONITOR_JSONOBJECT, 2));
         rootNode.add(thirdPartyNode);
         logger.debug("Loaded {} Hook Third-Party scripts", thirdPartyNode.getChildCount());
 
-        // Category 6: Hook JNI (currently empty, user will add JNI scripts)
+        // Category 6: Hook JNI
         String jniTitle = isEnglish ? "6. Hook JNI" : "6. JNI相关";
         DefaultMutableTreeNode jniNode = new DefaultMutableTreeNode(jniTitle);
-        // TODO: Add JNI hook scripts here when available
-        // jniNode.add(createScriptNode(HookJNI.YOUR_SCRIPT, 0));
+        jniNode.add(createScriptNode(HookJNI.HOOK_REGISTER_NATIVES, 0));
+        jniNode.add(createScriptNode(HookJNI.JNITRACE_USAGE, 1));
         rootNode.add(jniNode);
         logger.debug("Loaded {} Hook JNI scripts", jniNode.getChildCount());
         
-        // Category 7: Frida Advanced
-        String fridaTitle = isEnglish ? "7. Frida Advanced" : "7. Frida进阶";
-        DefaultMutableTreeNode fridaNode = new DefaultMutableTreeNode(fridaTitle);
-        fridaNode.add(createScriptNode(FridaAdvanced.CALL_METHODS, 0));
-        fridaNode.add(createScriptNode(FridaAdvanced.CLASSLOADER_HELPER, 1));
-        fridaNode.add(createScriptNode(FridaAdvanced.DUMP_CERTIFICATE, 2));
-        fridaNode.add(createScriptNode(FridaAdvanced.LOAD_DEX, 3));
-        fridaNode.add(createScriptNode(FridaAdvanced.JNI_REGISTER_NATIVES, 4));
-        rootNode.add(fridaNode);
-        logger.debug("Loaded {} Frida Advanced scripts", fridaNode.getChildCount());
+        // Category 7: Hook Advanced
+        String advancedTitle = isEnglish ? "7. Hook Advanced" : "7. Hook进阶";
+        DefaultMutableTreeNode advancedNode = new DefaultMutableTreeNode(advancedTitle);
+        advancedNode.add(createScriptNode(FridaAdvanced.CLASSLOADER_HELPER, 0));
+        advancedNode.add(createScriptNode(FridaAdvanced.DUMP_CERTIFICATE, 1));
+        advancedNode.add(createScriptNode(FridaAdvanced.DUMP_DEX_CACHE, 2));
+        advancedNode.add(createScriptNode(FridaAdvanced.DUMP_DEX_DEFINECLASS, 3));
+        advancedNode.add(createScriptNode(FridaAdvanced.DUMP_SO, 4));
+        advancedNode.add(createScriptNode(FridaAdvanced.DUMP_ANONYMOUS_MEMORY, 5));
+        rootNode.add(advancedNode);
+        logger.debug("Loaded {} Hook Advanced scripts", advancedNode.getChildCount());
         
         // Category 8: Bypass Check
         String bypassTitle = isEnglish ? "8. Bypass Check" : "8. 绕过检测";
         DefaultMutableTreeNode bypassNode = new DefaultMutableTreeNode(bypassTitle);
-        bypassNode.add(createScriptNode(BypassCheck.BYPASS_MSA, 0));
+        bypassNode.add(createScriptNode(BypassCheck.BYPASS_ROOT_DETECTION, 0));
+        bypassNode.add(createScriptNode(BypassCheck.BYPASS_SSL_PINNING, 1));
+        bypassNode.add(createScriptNode(BypassCheck.BYPASS_MSA_FRIDA_CHECK, 2));
         rootNode.add(bypassNode);
         logger.debug("Loaded {} Bypass Check scripts", bypassNode.getChildCount());
 
@@ -359,43 +369,87 @@ public class FridaScriptDialog extends JDialog {
     }
     
     /**
-     * Remove comments from JavaScript code
+     * Remove comments from JavaScript code (supports single-line and multi-line comments)
      * @param code JavaScript code
      * @return Code without comments
      */
     private String removeComments(String code) {
         StringBuilder result = new StringBuilder();
-        String[] lines = code.split("\n");
+        boolean inMultiLineComment = false;
+        boolean inString = false;
+        char stringChar = '\0';
         
-        for (String line : lines) {
-            // Skip lines that start with // (after trimming)
-            String trimmed = line.trim();
-            if (trimmed.startsWith("//")) {
+        for (int i = 0; i < code.length(); i++) {
+            char c = code.charAt(i);
+            char next = (i + 1 < code.length()) ? code.charAt(i + 1) : '\0';
+            
+            // Handle string boundaries
+            if (!inMultiLineComment && (c == '"' || c == '\'' || c == '`')) {
+                if (!inString) {
+                    inString = true;
+                    stringChar = c;
+                    result.append(c);
+                } else if (c == stringChar && (i == 0 || code.charAt(i - 1) != '\\')) {
+                    inString = false;
+                    stringChar = '\0';
+                    result.append(c);
+                } else {
+                    result.append(c);
+                }
                 continue;
             }
             
-            // For lines with inline comments, remove the // part
-            int commentIndex = line.indexOf("//");
-            if (commentIndex > 0) {
-                // Check if // is inside a string
-                String beforeComment = line.substring(0, commentIndex);
-                int singleQuotes = countOccurrences(beforeComment, '\'');
-                int doubleQuotes = countOccurrences(beforeComment, '"');
-                int backticks = countOccurrences(beforeComment, '`');
-                
-                // If quotes/backticks are balanced, // is not in a string
-                if (singleQuotes % 2 == 0 && doubleQuotes % 2 == 0 && backticks % 2 == 0) {
-                    line = line.substring(0, commentIndex).stripTrailing();
-                }
+            // If in string, just append
+            if (inString) {
+                result.append(c);
+                continue;
             }
             
-            // Only add non-empty lines
+            // Handle multi-line comment start
+            if (!inMultiLineComment && c == '/' && next == '*') {
+                inMultiLineComment = true;
+                i++; // Skip next char
+                continue;
+            }
+            
+            // Handle multi-line comment end
+            if (inMultiLineComment && c == '*' && next == '/') {
+                inMultiLineComment = false;
+                i++; // Skip next char
+                continue;
+            }
+            
+            // Handle single-line comment
+            if (!inMultiLineComment && c == '/' && next == '/') {
+                // Skip until end of line
+                while (i < code.length() && code.charAt(i) != '\n') {
+                    i++;
+                }
+                if (i < code.length()) {
+                    result.append('\n'); // Keep the newline
+                }
+                continue;
+            }
+            
+            // If in multi-line comment, skip
+            if (inMultiLineComment) {
+                continue;
+            }
+            
+            // Otherwise, append the character
+            result.append(c);
+        }
+        
+        // Remove empty lines
+        StringBuilder finalResult = new StringBuilder();
+        String[] lines = result.toString().split("\n");
+        for (String line : lines) {
             if (!line.trim().isEmpty()) {
-                result.append(line).append("\n");
+                finalResult.append(line).append("\n");
             }
         }
         
-        return result.toString();
+        return finalResult.toString();
     }
     
     /**

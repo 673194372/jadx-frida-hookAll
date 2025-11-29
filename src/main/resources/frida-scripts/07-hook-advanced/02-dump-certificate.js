@@ -140,5 +140,4 @@ function hook_cert() {
         };
     });
 }
-
-setImmediate(hook_cert);
+hook_cert();

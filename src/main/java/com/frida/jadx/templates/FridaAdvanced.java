@@ -3,40 +3,62 @@ package com.frida.jadx.templates;
 import com.frida.jadx.FridaTemplates.ScriptEntry;
 
 /**
- * Category 7: Frida Advanced (Frida进阶)
- * Advanced Frida features and utilities
+ * Category 7: Hook Advanced (Hook进阶)
+ * Advanced hooking techniques, Frida utilities and memory dumping
  */
 public class FridaAdvanced {
     
-    private static final String BASE_PATH = "frida-scripts/07-frida-advancedApi/";
-    
-    public static final ScriptEntry CALL_METHODS = new ScriptEntry(
-        "Call Methods Actively",
-        "主动调用方法",
-        ScriptLoader.loadScript(BASE_PATH + "01-call-methods.js")
-    );
+    private static final String BASE_PATH = "frida-scripts/07-hook-advanced/";
     
     public static final ScriptEntry CLASSLOADER_HELPER = new ScriptEntry(
         "ClassLoader Helper",
         "ClassLoader辅助",
-        ScriptLoader.loadScript(BASE_PATH + "02-classloader-helper.js")
+        ScriptLoader.loadScript(BASE_PATH + "01-classloader-helper.js")
     );
     
     public static final ScriptEntry DUMP_CERTIFICATE = new ScriptEntry(
         "Dump Certificate",
         "Dump证书",
-        ScriptLoader.loadScript(BASE_PATH + "03-dump-certificate.js")
+        ScriptLoader.loadScript(BASE_PATH + "02-dump-certificate.js")
     );
     
-    public static final ScriptEntry LOAD_DEX = new ScriptEntry(
-        "Load DEX Dynamically",
-        "动态加载DEX",
-        ScriptLoader.loadScript(BASE_PATH + "04-load-dex.js")
+    /**
+     * Dump DEX from DexCache (推荐方案)
+     * 通过枚举 DexCache 对象脱壳，通用性强，适用于大多数加固壳
+     */
+    public static final ScriptEntry DUMP_DEX_CACHE = new ScriptEntry(
+        "Dump DEX (DexCache)",
+        "Dex脱壳 - DexCache枚举方式",
+        ScriptLoader.loadScript(BASE_PATH + "03-dump-dex-cache.js")
     );
     
-    public static final ScriptEntry JNI_REGISTER_NATIVES = new ScriptEntry(
-        "JNI RegisterNatives",
-        "监控JNI注册",
-        ScriptLoader.loadScript(BASE_PATH + "05-jni-register-natives.js")
+    /**
+     * Dump DEX via DefineClass Hook
+     * 通过 Hook ClassLinker::DefineClass 捕获类加载，适合分析启动流程
+     */
+    public static final ScriptEntry DUMP_DEX_DEFINECLASS = new ScriptEntry(
+        "Dump DEX (DefineClass)",
+        "Dex脱壳 - DefineClass Hook方式",
+        ScriptLoader.loadScript(BASE_PATH + "04-dump-dex-defineclass.js")
+    );
+    
+    /**
+     * Dump SO libraries from memory
+     * 从内存中 Dump Native 库（.so 文件），绕过加固保护
+     */
+    public static final ScriptEntry DUMP_SO = new ScriptEntry(
+        "Dump SO Library",
+        "SO库内存Dump",
+        ScriptLoader.loadScript(BASE_PATH + "05-dump-so.js")
+    );
+    
+    /**
+     * Dump Anonymous Memory
+     * Dump匿名内存区域，用于分析动态生成的代码
+     */
+    public static final ScriptEntry DUMP_ANONYMOUS_MEMORY = new ScriptEntry(
+        "Dump Anonymous Memory",
+        "Dump匿名内存",
+        ScriptLoader.loadScript(BASE_PATH + "06-dump-anonymous-memory.js")
     );
 }

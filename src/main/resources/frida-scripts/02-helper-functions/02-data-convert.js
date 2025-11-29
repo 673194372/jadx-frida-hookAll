@@ -2,13 +2,26 @@
 
 // ==================== 字节数组 <-> 十六进制 ====================
 
-// 字节数组转十六进制字符串
+// 方式 1: 简洁版 (推荐)
 function bytesToHex(bytes) {
     var hex = '';
     for (var i = 0; i < bytes.length; i++) {
         hex += ('0' + (bytes[i] & 0xFF).toString(16)).slice(-2);
     }
     return hex;
+}
+
+// 方式 2: 兼容负数的版本 (适用于某些特殊场景)
+function bytesToHex_Compatible(bytes) {
+    let str = '';
+    for (let i = 0; i < bytes.length; i++) {
+        let k = bytes[i];
+        let j = k;
+        if (k < 0) j = k + 256;  // 处理负数
+        if (j < 16) str += "0";
+        str += j.toString(16);
+    }
+    return str;
 }
 
 // 十六进制字符串转字节数组
@@ -22,10 +35,20 @@ function hexToBytes(hex) {
 
 // ==================== 字节数组 <-> 字符串 ====================
 
-// 字节数组转 UTF-8 字符串 (推荐)
+// 方式 1: 使用 Java API (推荐)
 function bytesToString(bArr) {
     var JDKClass_String = Java.use('java.lang.String');
     return JDKClass_String.$new(Java.array('byte', bArr)).toString();
+}
+
+// 方式 2: 纯 JavaScript 实现 (不依赖 Java)
+function bytesToString_JS(bytes) {
+    let str = '';
+    bytes = new Uint8Array(bytes);
+    for (var i = 0; i < bytes.length; i++) {
+        str += String.fromCharCode(bytes[i]);
+    }
+    return str;
 }
 
 // 字节数组转 UTF-8 字符串 (使用 Charset)
@@ -36,6 +59,14 @@ function bytesToUtf8(exampleBytes) {
     return JDKClass_String.$new(exampleBytes, utf8Charset);
 }
 
+// 利用android的API将字节数组转为字符串
+function bytesToByteString(exampleBytes) {
+    let AndroidClass_ByteString = Java.use("com.android.okhttp.okio.ByteString");
+    // 这里如果没有overload容易报错
+    let value_str = AndroidClass_ByteString.of.overload('[B').call(AndroidClass_ByteString, exampleBytes).utf8();
+    return value_str;
+}
+
 // 字符串转字节数组
 function stringToBytes(str) {
     var JDKClass_String = Java.use("java.lang.String");
@@ -44,6 +75,7 @@ function stringToBytes(str) {
 
 // ==================== 字节数组 <-> Base64 ====================
 
+// 方式 1: 使用 Android API (推荐，简洁)
 // 字节数组转 Base64 字符串
 function bytesToBase64(bytes) {
     var AndroidClass_Base64 = Java.use("android.util.Base64");
@@ -55,6 +87,62 @@ function base64ToBytes(base64Str) {
     var AndroidClass_Base64 = Java.use("android.util.Base64");
     var JDKClass_String = Java.use("java.lang.String");
     return AndroidClass_Base64.decode(JDKClass_String.$new(base64Str), 0);
+}
+
+// 方式 2: 纯 JavaScript 实现 (不依赖 Java)
+const base64EncodeChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+const base64DecodeChars = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,62,-1,-1,-1,63,52,53,54,55,56,57,58,59,60,61,-1,-1,-1,-1,-1,-1,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,-1,-1,-1,-1,-1,-1,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,-1,-1,-1,-1,-1];
+
+// 纯 JS 实现：字节数组转 Base64
+function bytesToBase64_JS(bytes) {
+    var result = '';
+    var length = bytes.length;
+    var i = 0;
+    
+    // 每次处理 3 个字节，转换为 4 个 Base64 字符
+    while (i < length) {
+        var byte1 = bytes[i++] & 0xFF;
+        var byte2 = i < length ? bytes[i++] & 0xFF : 0;
+        var byte3 = i < length ? bytes[i++] & 0xFF : 0;
+        
+        // 将 3 个字节（24位）分成 4 组，每组 6 位
+        var enc1 = byte1 >> 2;
+        var enc2 = ((byte1 & 0x03) << 4) | (byte2 >> 4);
+        var enc3 = ((byte2 & 0x0F) << 2) | (byte3 >> 6);
+        var enc4 = byte3 & 0x3F;
+        
+        result += base64EncodeChars.charAt(enc1);
+        result += base64EncodeChars.charAt(enc2);
+        result += (i - 1 < length) ? base64EncodeChars.charAt(enc3) : '=';
+        result += (i < length) ? base64EncodeChars.charAt(enc4) : '=';
+    }
+    
+    return result;
+}
+
+// 纯 JS 实现：字符串转 Base64
+function stringToBase64_JS(str) {
+    var result = '';
+    var length = str.length;
+    var i = 0;
+    
+    while (i < length) {
+        var char1 = str.charCodeAt(i++) & 0xFF;
+        var char2 = i < length ? str.charCodeAt(i++) & 0xFF : 0;
+        var char3 = i < length ? str.charCodeAt(i++) & 0xFF : 0;
+        
+        var enc1 = char1 >> 2;
+        var enc2 = ((char1 & 0x03) << 4) | (char2 >> 4);
+        var enc3 = ((char2 & 0x0F) << 2) | (char3 >> 6);
+        var enc4 = char3 & 0x3F;
+        
+        result += base64EncodeChars.charAt(enc1);
+        result += base64EncodeChars.charAt(enc2);
+        result += (i - 1 < length) ? base64EncodeChars.charAt(enc3) : '=';
+        result += (i < length) ? base64EncodeChars.charAt(enc4) : '=';
+    }
+    
+    return result;
 }
 
 // ==================== 十六进制 <-> 字符串 ====================
@@ -89,7 +177,7 @@ function bytesToUtf8_ByteString(bArr) {
     return OkHttpClass_ByteString.of(bArr).utf8();
 }
 
-// 使用 Java.cast 转换数组
+// js数组转java的字节数组
 function bytesToUtf8_Cast(objArr) {
     var JDKClass_Byte = Java.use("[B");
     var buffer = Java.cast(objArr[0], JDKClass_Byte);
@@ -101,56 +189,23 @@ function bytesToUtf8_Cast(objArr) {
 
 // 打印所有格式的数据
 function printAllFormats(bytes, dataName) {
-    console.log((dataName || "Data") + " in all formats:");
+    console.log(dataName + " in all formats:");
     console.log("  Hex:    " + bytesToHex(bytes));
     console.log("  String: " + bytesToString(bytes));
     console.log("  Base64: " + bytesToBase64(bytes));
 }
 
-// 注意事项：
-// 1. bytesToString 是最简单的字节转字符串方法，推荐使用
-// 2. bytesToHex 适用于查看原始字节的十六进制表示
-// 3. Base64 编码常用于网络传输和存储
-// 4. bytesToUtf8_ByteString 需要应用中有 okhttp 库
-// 5. 所有转换都假设字符编码为 UTF-8
 
-// 使用示例:
-// function hook_monitor_encrypt(){
-//     Java.perform(function () {
-//         let com_example_Crypto = Java.use("com.example.Crypto");
-//         com_example_Crypto["encrypt"].implementation = function (data) {
-//             console.log(`[->] com_example_Crypto.encrypt is called! args are as follows:`);
-//             console.log(`    ->data(Hex)= ${bytesToHex(data)}`);
-//             console.log(`    ->data(String)= ${bytesToString(data)}`);
-//             console.log(`    ->data(Base64)= ${bytesToBase64(data)}`);
-//             
-//             var retval = this["encrypt"](data);
-//             
-//             console.log(`[<-] com_example_Crypto.encrypt ended!`);
-//             console.log(`    retval(Hex)= ${bytesToHex(retval)}`);
-//             console.log(`    retval(String)= ${bytesToString(retval)}`);
-//             console.log(`    retval(Base64)= ${bytesToBase64(retval)}`);
-//             
-//             // 或者使用 printAllFormats 一次性打印所有格式
-//             // printAllFormats(data, "Input");
-//             // printAllFormats(retval, "Output");
-//             
-//             return retval;
-//         };
-//     });
-//     console.warn(`[*] hook_monitor_encrypt is injected!`);
-// };
-// hook_monitor_encrypt();
 
 /*
 关于 数据转换 (Data Conversion) 的详解
 
 在逆向过程中，数据的展现形式多种多样。
-最常见的二进制数据载体是 `byte[]` (Java 字节数组)。
+最常见的二进制数据载体是 `byte[]` (Java 字节数组)或者说是 `bytes` (py等语言中的字节序列).
 
 转换的必要性：
 1. 人类可读性：
-   - `byte[]` 直接打印是对象地址 `[B@xxxx`，无法阅读。
+   - `byte[]` 直接打印是Java对象地址 `[B@xxxx`，无法阅读。
    - 需要转成 Hex (十六进制) 或 Base64 以便查看内容。
    - 如果是文本内容，需要转成 String。
 
@@ -161,14 +216,10 @@ function printAllFormats(bytes, dataName) {
 常见坑：
 1. 乱码：
    - 如果 `byte[]` 包含非打印字符（如加密后的密文），强制转 String 会显示乱码，甚至丢失数据。
-   - 此时应该优先看 Hex。
+   - 此时应该看 Hex。
 
 2. 编码问题：
-   - 默认通常是 UTF-8。
+   - 默认通常是 UTF-8, 脚本也只关注这个编码。
    - 但有些老旧系统可能用 GBK，或者 Crypto 库可能用 ISO-8859-1。
 
-速记：
-1. 拿到 `byte[]`，先看 Hex，再试 String。
-2. 看到 "0x..." 或 "A1 B2..." 是 Hex。
-3. 看到 "..." 或 "==" 结尾，是 Base64。
 */

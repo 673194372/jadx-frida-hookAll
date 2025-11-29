@@ -3,12 +3,12 @@ package com.frida.jadx.templates;
 import com.frida.jadx.FridaTemplates.ScriptEntry;
 
 /**
- * Category 1: Frida Basics (Frida基本使用)
- * Basic Frida hook examples and fundamental usage
+ * Category 1: Frida APIs (Frida API)
+ * Common Frida API usage and hooking examples
  */
 public class FridaBasics {
     
-    private static final String BASE_PATH = "frida-scripts/01-frida-basicUse/";
+    private static final String BASE_PATH = "frida-scripts/01-frida-apis/";
     
     public static final ScriptEntry HOOK_BASIC = new ScriptEntry(
         "Hook Basic Method",

@@ -10,11 +10,23 @@ public class HookJNI {
     
     private static final String BASE_PATH = "frida-scripts/06-hook-jni/";
     
-    // 第6类目前为空，你可以在这里添加JNI相关的脚本
-    // 例如：
-    // public static final ScriptEntry HOOK_JNI_FUNCTIONS = new ScriptEntry(
-    //     "Hook JNI Functions",
-    //     "Hook JNI函数",
-    //     ScriptLoader.loadScript(BASE_PATH + "hook-jni-functions.js")
-    // );
+    /**
+     * Hook RegisterNatives - 监控所有 JNI 函数注册
+     * 逆向价值极高：快速定位所有 Native 函数的地址和签名
+     */
+    public static final ScriptEntry HOOK_REGISTER_NATIVES = new ScriptEntry(
+        "Hook RegisterNatives",
+        "监控JNI函数注册",
+        ScriptLoader.loadScript(BASE_PATH + "01-hook-register-natives.js")
+    );
+    
+    /**
+     * JNITrace Usage - jnitrace工具的使用说明
+     * jnitrace是基于Frida的JNI函数追踪工具，自动解析参数
+     */
+    public static final ScriptEntry JNITRACE_USAGE = new ScriptEntry(
+        "JNITrace Usage Guide",
+        "JNITrace工具使用说明",
+        ScriptLoader.loadScript(BASE_PATH + "02-jnitrace-usage.js")
+    );
 }
